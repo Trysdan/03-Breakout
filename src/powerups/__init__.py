@@ -11,5 +11,6 @@ This module contains all of the power ups.
 from src.powerups.PowerUp import PowerUp
 from src.powerups.TwoMoreBall import TwoMoreBall
 from src.powerups.TeleportEdges import TeleportEdges
+from src.powerups.StickyPaddle import StickyPaddle
 
-(PowerUp, TwoMoreBall, TeleportEdges)
+(PowerUp, TwoMoreBall, TeleportEdges, StickyPaddle)

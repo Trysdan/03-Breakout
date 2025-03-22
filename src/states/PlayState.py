@@ -16,6 +16,7 @@ from gale.factory import AbstractFactory
 from gale.state import BaseState
 from gale.input_handler import InputData
 from gale.text import render_text
+from typing import TypeVar
 
 import settings
 import src.powerups
@@ -46,19 +47,28 @@ class PlayState(BaseState):
         self.border_bounce = True
 
     def update(self, dt: float) -> None:
+        paddlePreviousX = self.paddle.x
         self.paddle.update(dt)
-
         for ball in self.balls:
-            ball.update(dt)
-            if self.border_bounce:
-                ball.solve_world_boundaries()
+            ballSticked = ball in self.paddle.stickedBalls
+            if not ballSticked:
+                ball.update(dt)
+                if self.border_bounce:
+                    ball.solve_world_boundaries()
+            else: 
+                ball.x += self.paddle.x - paddlePreviousX
 
             # Check collision with the paddle
             if ball.collides(self.paddle):
-                settings.SOUNDS["paddle_hit"].stop()
-                settings.SOUNDS["paddle_hit"].play()
-                ball.rebound(self.paddle)
-                ball.push(self.paddle)
+                if not ballSticked:
+                    settings.SOUNDS["paddle_hit"].stop()
+                    settings.SOUNDS["paddle_hit"].play()
+                    if self.paddle.sticky:
+                        ball.y = self.paddle.y - 8
+                        self.paddle.stickedBalls.append(ball)
+                    else:
+                        ball.rebound(self.paddle)
+                        ball.push(self.paddle)
 
             # Check collision with brickset
             if not ball.collides(self.brickset):
@@ -96,6 +106,17 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
+            
+            # Chance to generate sticky paddle
+            if random.random() < 0.5:
+                r = brick.get_collision_rect()
+                self.powerups.append(
+                    self.powerups_abstract_factory.get_factory("StickyPaddle").create(
+                        r.centerx - 8, r.centery - 8
+                    )
+                )
+
+            # Chance to generate teleport edges
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
                 self.powerups.append(
@@ -140,6 +161,7 @@ class PlayState(BaseState):
         if self.brickset.size == 1 and next(
             (True for _, b in self.brickset.bricks.items() if b.broken), False
         ):
+            self.paddle.sticky = False
             self.state_machine.change(
                 "victory",
                 lives=self.lives,
@@ -214,3 +236,6 @@ class PlayState(BaseState):
                 live_factor=self.live_factor,
                 powerups=self.powerups,
             )
+        elif input_id == "release_ball" and input_data.pressed:
+            self.paddle.sticky = False
+            self.paddle.stickedBalls.clear()
