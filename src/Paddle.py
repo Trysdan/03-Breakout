@@ -32,6 +32,9 @@ class Paddle:
         # The paddle only move horizontally
         self.vx = 0
 
+        # The stickyness property of a paddle
+        self.sticky = False
+
     def resize(self, size: int) -> None:
         self.size = size
         self.width = (self.size + 1) * 32
