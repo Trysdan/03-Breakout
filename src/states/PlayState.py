@@ -94,6 +94,15 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
+            
+            # Chance to generate sticky paddle
+            if random.random() < 0.5:
+                r = brick.get_collision_rect()
+                self.powerups.append(
+                    self.powerups_abstract_factory.get_factory("StickyPaddle").create(
+                        r.centerx - 8, r.centery - 8
+                    )
+                )
 
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.active]
