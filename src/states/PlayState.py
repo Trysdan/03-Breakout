@@ -16,6 +16,7 @@ from gale.factory import AbstractFactory
 from gale.state import BaseState
 from gale.input_handler import InputData
 from gale.text import render_text
+from typing import TypeVar
 
 import settings
 import src.powerups
@@ -45,18 +46,29 @@ class PlayState(BaseState):
         self.powerups_abstract_factory = AbstractFactory("src.powerups")
 
     def update(self, dt: float) -> None:
+        paddlePreviousX = self.paddle.x
         self.paddle.update(dt)
-
         for ball in self.balls:
             ball.update(dt)
+            ballSticked = ball in self.paddle.stickedBalls
+            if ballSticked: 
+                ball.x += self.paddle.x - paddlePreviousX
             ball.solve_world_boundaries()
 
             # Check collision with the paddle
             if ball.collides(self.paddle):
-                settings.SOUNDS["paddle_hit"].stop()
-                settings.SOUNDS["paddle_hit"].play()
-                ball.rebound(self.paddle)
-                ball.push(self.paddle)
+                if not ballSticked:
+                    settings.SOUNDS["paddle_hit"].stop()
+                    settings.SOUNDS["paddle_hit"].play()
+
+                if self.paddle.sticky and not ballSticked:
+                    ball.y = self.paddle.y - 8
+                    ball.vx = 0
+                    ball.vy = 0
+                    self.paddle.stickedBalls.append(ball)
+                else:
+                    ball.rebound(self.paddle)
+                    ball.push(self.paddle)
 
             # Check collision with brickset
             if not ball.collides(self.brickset):
