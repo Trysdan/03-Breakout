@@ -5,7 +5,7 @@ Study Case: Breakout
 Author: Jesus Diaz
 jdnieldp99@gmail.com
 
-Power-up que activa teletransporte por los bordes durante 10 segundos.
+This file contains the specialization of PowerUp to cross the edges infinitely.
 """
 from typing import TypeVar
 import pygame
