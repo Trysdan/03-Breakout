@@ -43,13 +43,15 @@ class PlayState(BaseState):
             settings.SOUNDS["paddle_hit"].play()
 
         self.powerups_abstract_factory = AbstractFactory("src.powerups")
+        self.border_bounce = True
 
     def update(self, dt: float) -> None:
         self.paddle.update(dt)
 
         for ball in self.balls:
             ball.update(dt)
-            ball.solve_world_boundaries()
+            if self.border_bounce:
+                ball.solve_world_boundaries()
 
             # Check collision with the paddle
             if ball.collides(self.paddle):
@@ -91,6 +93,13 @@ class PlayState(BaseState):
                 r = brick.get_collision_rect()
                 self.powerups.append(
                     self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
+                        r.centerx - 8, r.centery - 8
+                    )
+                )
+            if random.random() < 0.1:
+                r = brick.get_collision_rect()
+                self.powerups.append(
+                    self.powerups_abstract_factory.get_factory("TeleportEdges").create(
                         r.centerx - 8, r.centery - 8
                     )
                 )
