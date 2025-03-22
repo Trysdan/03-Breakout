@@ -150,6 +150,7 @@ class PlayState(BaseState):
         if self.brickset.size == 1 and next(
             (True for _, b in self.brickset.bricks.items() if b.broken), False
         ):
+            self.paddle.sticky = False
             self.state_machine.change(
                 "victory",
                 lives=self.lives,
@@ -224,3 +225,6 @@ class PlayState(BaseState):
                 live_factor=self.live_factor,
                 powerups=self.powerups,
             )
+        elif input_id == "release_ball" and input_data.pressed:
+            self.paddle.sticky = False
+            self.paddle.stickedBalls.clear()
