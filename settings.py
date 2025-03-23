@@ -98,6 +98,7 @@ FRAMES = {
     "arrows": generate_frames(TEXTURES["arrows"], 24, 24),
     "powerups": generate_powerups_frames(),
     "cannons": generate_frames(TEXTURES["cannons"], 36, 51),
+    "projectile": generate_frames(TEXTURES["cannons"], 16, 16)
     
 }
 

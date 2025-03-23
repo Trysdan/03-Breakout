@@ -16,7 +16,7 @@ class Projectile:
         self.vy = settings.PROJECTILE_SPEED
 
         self.texture = settings.TEXTURES["cannons"]
-        self.frame = 3
+        self.frame = settings.FRAMES["projectile"][8]
 
     #dimensions of projectile
     def get_collision_rect(self) -> pygame.Rect:
@@ -28,10 +28,12 @@ class Projectile:
     def update(self, dt: float) -> None:
         self.y += self.vy * dt
 
-    def render(self, surface):
-        surface.blit(
-            self.texture, self.x, self.y, settings.FRAMES["cannons"][self.frame]
-        )
+    def solve_world_boundaries(self) -> None:
+        r = self.get_collision_rect()
+
+        if r.top > settings.VIRTUAL_HEIGHT:
+            settings.SOUNDS["hurt"].play()
+            self.in_play = False
 
     def get_intersection(r1: pygame.Rect, r2: pygame.Rect) -> Optional[Tuple[int, int]]:
         
@@ -53,7 +55,10 @@ class Projectile:
 
         return (x_shift, y_shift)
 
-
+    def render(self, surface):
+        surface.blit(
+            self.texture, (self.x - 30, self.y - 30), self.frame
+        )
 
 
         

@@ -17,6 +17,8 @@ from gale.state import BaseState
 from gale.input_handler import InputData
 from gale.text import render_text
 from typing import TypeVar
+from src.powerups import Cannons
+from src.powerups import Projectile
 
 import settings
 import src.powerups
@@ -37,6 +39,10 @@ class PlayState(BaseState):
             + settings.PADDLE_GROW_UP_POINTS * (self.paddle.size + 1) * self.level
         )
         self.powerups = params.get("powerups", [])
+        self.cannons = []
+        self.projectiles = []
+        self.effect_cannon_time = 5
+
 
         if not params.get("resume", False):
             self.balls[0].vx = random.randint(-80, 80)
@@ -124,6 +130,15 @@ class PlayState(BaseState):
                         r.centerx - random.randint(0, 8), r.centery - 8
                     )
                 )
+                
+            # Chance to generate cannnons
+            if random.random() < 0.1:
+               r = brick.get_collision_rect()
+               self.powerups.append(
+                   self.powerups_abstract_factory.get_factory("Cannon").create(
+                       r.centerx - random.randint(0, 8), r.centery -8 
+                   )
+               ) 
 
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.active]
@@ -173,6 +188,30 @@ class PlayState(BaseState):
                 live_factor=self.live_factor,
             )
 
+        if len(self.cannons) > 0:
+            self.cannons[0].x = self.paddle.x
+            self.cannons[0].y = self.paddle.y + 16 // 2 - self.cannons[0].height // 2
+
+            self.cannons[1].x = self.paddle.x + 64 - self.cannons[0].width
+            self.cannons[1].y = self.paddle.y + 64 // 2 - self.cannons[1].height // 2
+        
+        for projectile in self.projectiles:
+            projectile.update(dt)
+
+            if projectile.collides(self.brickset):
+                projectile.solve_world_boundaries()
+
+                brick = self.brickset.get_colliding_brick(
+                    projectile.get_collision_rect())
+
+                if brick is None:
+                    continue
+
+                brick.hit()
+                self.score += brick.score()
+                projectile.in_play = False
+
+
     def render(self, surface: pygame.Surface) -> None:
         heart_x = settings.VIRTUAL_WIDTH - 120
 
@@ -205,6 +244,12 @@ class PlayState(BaseState):
         self.brickset.render(surface)
 
         self.paddle.render(surface)
+
+        for cannon in self.cannons:
+            cannon.render(surface)
+
+        for projectile in self.projectiles:
+            projectile.render(surface)
 
         for ball in self.balls:
             ball.render(surface)
@@ -239,3 +284,16 @@ class PlayState(BaseState):
         elif input_id == "release_ball" and input_data.pressed:
             self.paddle.sticky = False
             self.paddle.stickedBalls.clear()
+        elif input_id == "shoot" and input_data.pressed:
+            for cannon in self.cannons:
+                cannon.shoot_projectiles()
+            
+            settings.SOUNDS["paddle_hit"].play()
+            
+    def fill_cannons(self):
+        if len(self.cannons) == 0:
+            self.cannons.append(
+                Cannons(self.paddle.x, self.paddle.y+self.paddle.height, self))
+            self.cannons.append(
+                Cannons(self.paddle.x-self.paddle.width, self.paddle.y+self.paddle.height, self))      
+            

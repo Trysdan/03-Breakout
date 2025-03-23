@@ -1,45 +1,35 @@
 import pygame
 
 import settings
-from src.Paddle import Paddle
+from src.states import PlayState
 from gale.factory import Factory
-from src.powerups.PowerUp import PowerUp
 from src.powerups.Projectile import Projectile
 from gale.input_handler import InputData
+from typing import TypeVar
 
-class Cannons(PowerUp):
+class Cannons:
     
     #We use paddle as a parameter to get its position
-    def __init__(self, paddle: Paddle) -> None: 
-        super().__init__(paddle.x, paddle.y, 0)
-        self.cannons_factory = Factory(Projectile)
+    def __init__(self, paddle_x : int, paddle_y : int, play_state: PlayState) -> None: 
+
+        #super().__init__(paddle_x, paddle_y, 1)
+        self.projectile_factory = Factory(Projectile)
         self.width = 32
-        self.height = 52
-
-        self.paddle = paddle       
+        self.height = 52  
         self.texture = settings.TEXTURES["cannons"]
-
-    def on_input(self, input_id: str, input_data: InputData) -> None:
-        if input_id == "shoot" and input_data.pressed:
-            settings.SOUNDS["paddle_hit"].play()
-            self.shoot_projectiles()
-
+        self.frame = settings.FRAMES["cannons"][0]
+        self.paddlex = paddle_x
+        self.paddley = paddle_y
+        self.play_state = play_state
+    
+    def take(self, play_state: TypeVar("PlayState"))-> None:
+        self.effect_start_time = pygame.time.get_ticks()/ 1000
+ 
     def shoot_projectiles(self):
-       
-        left_cannon_x = self.paddle.x
-        left_cannon_y = self.paddle.y + self.paddle.height // 2 - self.height // 2
-        
-        right_cannon_x = self.paddle.x + self.paddle.width - self.width
-        right_cannon_y = self.paddle.y + self.paddle.height // 2 - self.height // 2
          
-        left_projectile = self.cannons_factory.create(left_cannon_x, left_cannon_y)
-        right_projectile = self.cannons_factory.create(right_cannon_x, right_cannon_y)
-        
-        left_projectile.vy = settings.PROJECTILE_SPEED
-        right_projectile.vx = settings.PROJECTILE_SPEED
-
-        self.projectiles.append(left_projectile)
-        self.projectiles.append(right_projectile)
+        projectile = self.projectile_factory.create(self.paddlex, self.paddley)
+        projectile.vy = settings.PROJECTILE_SPEED
+        self.play_state.projectiles.append(projectile)
 
     def update(self):
     
@@ -50,17 +40,7 @@ class Cannons(PowerUp):
 
     def render(self, surface: pygame.Surface) -> None:
         
-        left_cannon_x = self.paddle.x
-        left_cannon_y = self.paddle.y + self.paddle.height // 2 - self.height // 2
+         surface.blit(
+            self.texture, (self.x, self.y), self.frame
+        )
         
-        right_cannon_x = self.paddle.x + self.paddle.width - self.width
-        right_cannon_y = self.paddle.y + self.paddle.height // 2 - self.height // 2
-        
-        surface.blit(
-            self.texture, (left_cannon_x, left_cannon_y), settings.FRAMES["cannons"])
-        
-        surface.blit(
-            self.texture, (right_cannon_x, right_cannon_y), settings.FRAMES["cannons"])
-        
-        for projectile in self.projectiles:
-            projectile.render(surface) 
