@@ -1,5 +1,5 @@
 """
-ISPPV1 2024
+ISPPV1 2023
 Study Case: Breakout
 
 Author: Alejandro Mujica
@@ -81,7 +81,7 @@ SOUNDS = {
 
 TEXTURES = {
     "background": pygame.image.load(
-        BASE_DIR / "assets" / "textures" / "background.png"
+        BASE_DIR / "assets" / "graphics" / "background.png"
     ),
     "spritesheet": pygame.image.load(BASE_DIR / "assets" / "textures" / "breakout.png"),
     "hearts": pygame.image.load(BASE_DIR / "assets" / "textures" / "hearts.png"),

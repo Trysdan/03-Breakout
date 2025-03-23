@@ -1,5 +1,5 @@
 """
-ISPPV1 2024
+ISPPV1 2023
 Study Case: Breakout
 
 Author: Alejandro Mujica
@@ -36,7 +36,7 @@ class ServeState(BaseState):
 
     def update(self, dt: float) -> None:
         self.paddle.update(dt)
-        self.ball.x = self.paddle.x + self.paddle.width // 2 - 4
+        self.ball.x = self.paddle.x + self.paddle.width // 2 - 2
 
     def render(self, surface: pygame.Surface) -> None:
         heart_x = settings.VIRTUAL_WIDTH - 120

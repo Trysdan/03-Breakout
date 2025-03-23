@@ -1,5 +1,5 @@
 """
-ISPPV1 2024
+ISPPV1 2023
 Study Case: Breakout
 
 Author: Alejandro Mujica
@@ -31,6 +31,12 @@ class Paddle:
 
         # The paddle only move horizontally
         self.vx = 0
+
+        # The stickyness property of a paddle
+        self.sticky = False
+
+        # The balls sticked to the paddle
+        self.stickedBalls = []
 
     def resize(self, size: int) -> None:
         self.size = size

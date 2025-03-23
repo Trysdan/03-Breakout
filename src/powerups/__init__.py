@@ -1,5 +1,5 @@
 """
-ISPPV1 2024
+ISPPV1 2023
 Study Case: Breakout
 
 Author: Alejandro Mujica
@@ -10,6 +10,8 @@ This module contains all of the power ups.
 
 from src.powerups.PowerUp import PowerUp
 from src.powerups.TwoMoreBall import TwoMoreBall
+from src.powerups.TeleportEdges import TeleportEdges
+from src.powerups.StickyPaddle import StickyPaddle
 from src.powerups.Cannons import Cannons
 
-(PowerUp, TwoMoreBall, Cannons)
+(PowerUp, TwoMoreBall, TeleportEdges, StickyPaddle)

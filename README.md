@@ -80,7 +80,13 @@ Classic Breakout implementation in Python using Pygame and Gale libraries.
 - **Paddle Movement:**
   - Move Left: `Left Arrow` key.
   - Move Right: `Right Arrow` key.
-- **Pause Game:** Press `Spacebar`.
 - **Quit Game:** Press `ESC`.
+
+
+## Power-up
+- **TeleportEdges**
+  - **Effect:** Balls pass through edges, reappearing on the opposite side.
+  - **Duration:** 5 seconds.
+  - **Visual:** Edges highlighted in green.
 
 Project created for video game programming practice course.
