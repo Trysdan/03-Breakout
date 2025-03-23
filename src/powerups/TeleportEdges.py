@@ -16,23 +16,29 @@ class TeleportEdges(PowerUp):
     """
     Power-up to cross the edges infinitely.
     """
+    effect_final_time = 0
+    
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 9)
         self.effect_duration = 5
-        self.effect_start_time = 0
         self.play_state_ref = None
+        self.taken = False
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
-        self.play_state_ref = play_state
-        self.effect_start_time = pygame.time.get_ticks() / 1000
-        self.vy = 0
+        
+        if not self.taken: 
+            self.play_state_ref = play_state
+            current_time = (pygame.time.get_ticks() / 1000)
+            TeleportEdges.effect_final_time = current_time + self.effect_duration
+            self.vy = 0
+        self.taken = True
 
     def update(self, dt: float) -> None:
         if self.play_state_ref is None:
             super().update(dt)
         else:
-            current_time = (pygame.time.get_ticks() / 1000) - self.effect_start_time
-            if current_time < self.effect_duration:
+            current_time = (pygame.time.get_ticks() / 1000)            
+            if current_time < TeleportEdges.effect_final_time:
                 self.play_state_ref.border_bounce = False
                 self._apply_teleport()
             else:
@@ -79,6 +85,6 @@ class TeleportEdges(PowerUp):
         if self.play_state_ref is None:
             super().render(surface)
         else:
-            current_time = (pygame.time.get_ticks() / 1000) - self.effect_start_time
-            if current_time < self.effect_duration:
+            current_time = (pygame.time.get_ticks() / 1000)            
+            if current_time < TeleportEdges.effect_final_time:
                 self._draw_border_effect(surface)
