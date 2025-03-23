@@ -12,5 +12,6 @@ from src.powerups.PowerUp import PowerUp
 from src.powerups.TwoMoreBall import TwoMoreBall
 from src.powerups.TeleportEdges import TeleportEdges
 from src.powerups.StickyPaddle import StickyPaddle
+from src.powerups.Cannons import Cannons
 
 (PowerUp, TwoMoreBall, TeleportEdges, StickyPaddle)

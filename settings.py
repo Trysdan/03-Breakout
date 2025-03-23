@@ -31,7 +31,11 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RIGHT, "move_ri
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, "move_down")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_LEFT, "move_left")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, "pause")
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_f, "shoot")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_r, "release_ball")
+
+#power up 
+PROJECTILE_SPEED = 100
 
 # Size of our actual window
 WINDOW_WIDTH = 1280
@@ -83,6 +87,7 @@ TEXTURES = {
     "spritesheet": pygame.image.load(BASE_DIR / "assets" / "graphics" / "breakout.png"),
     "hearts": pygame.image.load(BASE_DIR / "assets" / "graphics" / "hearts.png"),
     "arrows": pygame.image.load(BASE_DIR / "assets" / "graphics" / "arrows.png"),
+    "cannons": pygame.image.load(BASE_DIR / "assets" / "graphics" / "cannons.png"),
 }
 
 FRAMES = {
@@ -92,6 +97,8 @@ FRAMES = {
     "hearts": generate_frames(TEXTURES["hearts"], 10, 9),
     "arrows": generate_frames(TEXTURES["arrows"], 24, 24),
     "powerups": generate_powerups_frames(),
+    "cannons": generate_frames(TEXTURES["cannons"], 36, 51),
+    
 }
 
 pygame.font.init()
