@@ -24,6 +24,13 @@ Classic Breakout implementation in Python using Pygame and Gale libraries.
    python -m venv venv
    venv\Scripts\activate
    ```
+   Note on Virtual Environment Activation in PowerShell
+
+   If you encounter an error when trying to activate the virtual environment using the `venv\Scripts\activate` command in PowerShell, it may be due to the script execution policy on your system. To resolve this, run the following command in PowerShell before activating the virtual environment:
+
+   ```bash
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+      ```
 
 4. Install dependencies:
    ```bash
