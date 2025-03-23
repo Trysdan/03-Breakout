@@ -32,6 +32,7 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, "move_dow
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_LEFT, "move_left")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, "pause")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_f, "shoot")
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_r, "release_ball")
 
 #power up 
 PROJECTILE_SPEED = 100
@@ -83,10 +84,10 @@ TEXTURES = {
     "background": pygame.image.load(
         BASE_DIR / "assets" / "graphics" / "background.png"
     ),
-    "spritesheet": pygame.image.load(BASE_DIR / "assets" / "textures" / "breakout.png"),
-    "hearts": pygame.image.load(BASE_DIR / "assets" / "textures" / "hearts.png"),
-    "arrows": pygame.image.load(BASE_DIR / "assets" / "textures" / "arrows.png"),
-    "cannons": pygame.image.load(BASE_DIR / "assets" / "textures" / "cannons.png"),
+    "spritesheet": pygame.image.load(BASE_DIR / "assets" / "graphics" / "breakout.png"),
+    "hearts": pygame.image.load(BASE_DIR / "assets" / "graphics" / "hearts.png"),
+    "arrows": pygame.image.load(BASE_DIR / "assets" / "graphics" / "arrows.png"),
+    "cannons": pygame.image.load(BASE_DIR / "assets" / "graphics" / "cannons.png"),
 }
 
 FRAMES = {
