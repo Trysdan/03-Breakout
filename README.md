@@ -82,19 +82,35 @@ Classic Breakout implementation in Python using Pygame and Gale libraries.
    deactivate
    ```
 
-## Controls
-- **Start Game / Launch Ball:** Press `Enter` (Return key).
-- **Paddle Movement:**
+### Controls
+- **Start Game / Launch Ball**: Press `Enter` (Return key).
+- **Paddle Movement**:
   - Move Left: `Left Arrow` key.
   - Move Right: `Right Arrow` key.
-- **Pause Game:** Press `Spacebar`.
-- **Quit Game:** Press `ESC`.
+- **Pause Game**: Press `Spacebar`.
+- **Quit Game**: Press `ESC`.
+- **Launch Sticky Balls**: Press `R`.
+- **Shoot Cannon Bullets**: Press `F`.
 
+### Power-ups
+1. **Two More Balls**:
+   - **Effect**: Adds 2 extra balls to the game.
+   - **Duration**: Instant (balls remain until lost).
+   - **Visual**: Blue icon.
 
-## Power-up
-- **TeleportEdges**
-  - **Effect:** Balls pass through edges, reappearing on the opposite side.
-  - **Duration:** 5 seconds.
-  - **Visual:** Edges highlighted in green.
+2. **Sticky Paddle**:
+   - **Effect**: Balls stick to the paddle on contact. Press `R` to launch them again.
+   - **Duration**: Until all stuck balls are launched.
+   - **Visual**: Yellow icon.
+
+3. **Teleport Edges**:
+   - **Effect**: For 5 seconds, balls pass through edges and reappear on the opposite side.
+   - **Duration**: 5 seconds.
+   - **Visual**: Edges highlighted in green.
+
+4. **Cannons**:
+   - **Effect**: Adds two cannons to the sides of the paddle. Press `F` to shoot bullets that destroy bricks.
+   - **Duration**: Up to 5 shots.
+   - **Visual**: Red icon and visible cannons on the paddle.
 
 Project created for video game programming practice course.
