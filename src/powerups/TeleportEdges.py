@@ -16,7 +16,9 @@ class TeleportEdges(PowerUp):
     """
     Power-up to cross the edges infinitely.
     """
+    #Avoid multiple instances of the same active power-up, I reset the timer.
     effect_final_time = 0
+    effect_active = False
     
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 9)
@@ -25,12 +27,14 @@ class TeleportEdges(PowerUp):
         self.taken = False
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
-        
         if not self.taken: 
             self.play_state_ref = play_state
             current_time = (pygame.time.get_ticks() / 1000)
             TeleportEdges.effect_final_time = current_time + self.effect_duration
-            self.vy = 0
+            self.vy = 0        
+            if TeleportEdges.effect_active:
+                self.active = False
+            TeleportEdges.effect_active = True
         self.taken = True
 
     def update(self, dt: float) -> None:
@@ -44,6 +48,7 @@ class TeleportEdges(PowerUp):
             else:
                 self.play_state_ref.border_bounce = True
                 self.active = False
+                TeleportEdges.effect_active = False
 
     def _apply_teleport(self) -> None:
         for ball in self.play_state_ref.balls:

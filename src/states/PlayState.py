@@ -19,6 +19,7 @@ from gale.text import render_text
 from typing import TypeVar
 from src.powerups import Cannons
 from src.powerups import Projectile
+from src.powerups import CannonsPower
 
 import settings
 import src.powerups
@@ -42,6 +43,7 @@ class PlayState(BaseState):
         self.cannons = []
         self.projectiles = []
         self.effect_cannon_time = 5
+        self.bullets = []
 
 
         if not params.get("resume", False):
@@ -123,7 +125,7 @@ class PlayState(BaseState):
                 )
 
             # Chance to generate teleport edges
-            if random.random() < 0.1:
+            if random.random() < 0.6:
                 r = brick.get_collision_rect()
                 self.powerups.append(
                     self.powerups_abstract_factory.get_factory("TeleportEdges").create(
@@ -135,7 +137,7 @@ class PlayState(BaseState):
             if random.random() < 0.1:
                r = brick.get_collision_rect()
                self.powerups.append(
-                   self.powerups_abstract_factory.get_factory("Cannon").create(
+                   self.powerups_abstract_factory.get_factory("CannonsPower").create(
                        r.centerx - random.randint(0, 8), r.centery -8 
                    )
                ) 
@@ -189,11 +191,11 @@ class PlayState(BaseState):
             )
 
         if len(self.cannons) > 0:
-            self.cannons[0].x = self.paddle.x
-            self.cannons[0].y = self.paddle.y + 16 // 2 - self.cannons[0].height // 2
+            self.cannons[0].x = self.paddle.x - self.cannons[0].width
+            self.cannons[0].y = self.paddle.y + self.paddle.height // 2 - self.cannons[0].height // 2
 
-            self.cannons[1].x = self.paddle.x + 64 - self.cannons[0].width
-            self.cannons[1].y = self.paddle.y + 64 // 2 - self.cannons[1].height // 2
+            self.cannons[1].x = self.paddle.x + self.paddle.width
+            self.cannons[1].y = self.paddle.y + self.paddle.height // 2 - self.cannons[1].height // 2
         
         for projectile in self.projectiles:
             projectile.update(dt)
@@ -210,7 +212,11 @@ class PlayState(BaseState):
                 brick.hit()
                 self.score += brick.score()
                 projectile.in_play = False
-
+        
+        # Actualizar balas
+        for bullet in self.bullets:
+                bullet.update(dt, self.brickset)
+        self.bullets = [b for b in self.bullets if b.active]
 
     def render(self, surface: pygame.Surface) -> None:
         heart_x = settings.VIRTUAL_WIDTH - 120
@@ -256,6 +262,10 @@ class PlayState(BaseState):
 
         for powerup in self.powerups:
             powerup.render(surface)
+            
+        # Dibujar balas
+        for bullet in self.bullets:
+            bullet.render(surface)
 
     def on_input(self, input_id: str, input_data: InputData) -> None:
         if input_id == "move_left":
@@ -284,9 +294,13 @@ class PlayState(BaseState):
         elif input_id == "release_ball" and input_data.pressed:
             self.paddle.sticky = False
             self.paddle.stickedBalls.clear()
+        # elif input_id == "shoot" and input_data.pressed:
+        #     for cannon in self.cannons:
+        #         cannon.shoot_projectiles()
         elif input_id == "shoot" and input_data.pressed:
-            for cannon in self.cannons:
-                cannon.shoot_projectiles()
+            for powerup in self.powerups:
+                if isinstance(powerup, CannonsPower) and powerup.active:
+                    powerup._shoot_bullets()
             
             settings.SOUNDS["paddle_hit"].play()
             
