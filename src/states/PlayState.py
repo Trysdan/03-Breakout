@@ -125,7 +125,7 @@ class PlayState(BaseState):
                 )
 
             # Chance to generate teleport edges
-            if random.random() < 0.6:
+            if random.random() < 0.05:
                 r = brick.get_collision_rect()
                 self.powerups.append(
                     self.powerups_abstract_factory.get_factory("TeleportEdges").create(
